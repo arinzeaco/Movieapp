@@ -54,6 +54,7 @@ class MoviesFragment : Fragment() {
             ids = viewModel.getSavedMoviesHide().value!!
 
             val moviesList = ids.map { it.id }.toList()
+            Log.i("lllllluuuu", moviesList.toString())
             viewModel.getSavedMovies(moviesList as List<Int>).observe(viewLifecycleOwner) {
                 moviesAdapter.differ.submitList(it)
             }
@@ -65,7 +66,7 @@ class MoviesFragment : Fragment() {
 
 
         (activity as MainActivity).hideBottomNav(false)
-
+       showProgressBar()
     }
 
     private fun initRecyclerView() {
@@ -111,22 +112,6 @@ class MoviesFragment : Fragment() {
         }
     }
 
-    override fun onResume() {
-        super.onResume()
-        viewModel.getMovies()
-        if (viewModel.getSavedMoviesHide().value?.isNotEmpty() == true) {
-            ids = viewModel.getSavedMoviesHide().value!!
-
-            val moviesList = ids.map { it.id }.toList()
-            viewModel.getSavedMovies(moviesList as List<Int>).observe(viewLifecycleOwner) {
-                moviesAdapter.differ.submitList(it)
-            }
-        }else{
-            viewModel.getSavedMovies().observe(viewLifecycleOwner) {
-                moviesAdapter.differ.submitList(it)
-            }
-        }
-    }
 
     fun viewSearchedMovies() {
         viewModel.searchedMovies.observe(viewLifecycleOwner, { response ->
