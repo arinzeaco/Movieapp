@@ -20,12 +20,11 @@ data class MoviesHide(
     val poster: String?,
 
     @SerializedName("adult")
-    val adult: String?,
+    val adult: Boolean?,
 
     @SerializedName("description")
     val description: String?,
 
-    @SerializedName("favorite")
-    var favorite: Int?=1,
+
 
 ):Serializable

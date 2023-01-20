@@ -2,12 +2,13 @@ package com.exercise.movieapp.data.model
 
 
 import androidx.room.Entity
+import androidx.room.ForeignKey
 import androidx.room.PrimaryKey
 import com.google.gson.annotations.SerializedName
 import java.io.Serializable
 
 @Entity(
-    tableName = "Movies"
+    tableName = "Movies",
 )
 data class Movies(
     @PrimaryKey(autoGenerate = true)
@@ -20,12 +21,12 @@ data class Movies(
     val poster: String?,
 
     @SerializedName("adult")
-    val adult: String?,
+    val adult: Boolean?,
 
-    @SerializedName("description")
+    @SerializedName("overview")
     val description: String?,
 
-    @SerializedName("favorite")
-    var favorite: Int?=1,
+
+
 
 ):Serializable

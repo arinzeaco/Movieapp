@@ -5,11 +5,19 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.webkit.WebViewClient
+import androidx.navigation.NavArgs
 import androidx.navigation.fragment.navArgs
+import com.exercise.movieapp.data.model.Movies
+import com.exercise.movieapp.data.model.MoviesFavorite
+import com.exercise.movieapp.data.model.MoviesHide
 import com.exercise.movieapp.databinding.FragmentMoviesInfoBinding
+import com.exercise.movieapp.presentation.viewmodel.MoviesViewModel
+import com.google.android.material.snackbar.Snackbar
 
 class InfoFragment : Fragment() {
     private lateinit var fragmentInfoBinding: FragmentMoviesInfoBinding
+    private lateinit var viewModel : MoviesViewModel
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -23,16 +31,29 @@ class InfoFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         fragmentInfoBinding = FragmentMoviesInfoBinding.bind(view)
         val args : InfoFragmentArgs by navArgs()
+        val movies = args.selectedMovies
 
+        viewModel=(activity as MainActivity).viewModel
 
-//        fragmentInfoBinding.wvInfo.apply {
-//            webViewClient = WebViewClient()
-//            if(movies.url!=null) {
-//                loadUrl(movies.url)
-//            }
-//
-//        }
-
+        fragmentInfoBinding.title.text = movies.title
+        fragmentInfoBinding.description.text = movies.description
+        if(movies.adult!!){
+            fragmentInfoBinding.rating.text = "18+"
+        }else{
+            fragmentInfoBinding.rating.text = "PG"
+        }
+        fragmentInfoBinding.fabSave.setOnClickListener {
+            val datas=MoviesFavorite( movies.id, movies.title, movies.poster,
+                    movies.adult,movies.description)
+            viewModel.saveFavoriteMovies(datas)
+            Snackbar.make(view,"Saved Successfully!",Snackbar.LENGTH_LONG).show()
+        }
+        fragmentInfoBinding.fabHide.setOnClickListener {
+            val datas=MoviesHide( movies.id, movies.title, movies.poster,
+                movies.adult,movies.description)
+            viewModel.saveMoviesHide(datas)
+            Snackbar.make(view,"Saved Successfully!",Snackbar.LENGTH_LONG).show()
+        }
     }
 }
 

@@ -6,17 +6,15 @@ import com.exercise.movieapp.data.repository.dataSource.MoviesRemoteDataSource
 import retrofit2.Response
 
 class MoviesRemoteDataSourceImpl(
-        private val MoviesAPIService: MoviesAPIService
+        private val moviesAPIService: MoviesAPIService
 ):MoviesRemoteDataSource {
-    override suspend fun getMovies(country : String, page : Int): Response<APIResponse> {
-          return MoviesAPIService.getMovies()
+    override suspend fun getMovies(): Response<APIResponse> {
+          return moviesAPIService.getMovies()
     }
 
     override suspend fun getSearchedMovies(
-        country: String,
         searchQuery: String,
-        page: Int
     ): Response<APIResponse> {
-        return MoviesAPIService.getSearchedMovies(searchQuery)
+        return moviesAPIService.getSearchedMovies(searchQuery)
     }
 }

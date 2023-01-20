@@ -16,7 +16,6 @@ interface MoviesFavoriteDAO {
     fun getAllMoviesFavorite(): Flow<List<MoviesFavorite>>
 
     @Delete
-    suspend fun deleteMoviesFavorite(moviesHide: MoviesFavorite)
-
+    suspend fun deleteMoviesFavorite(moviesFavorite: MoviesFavorite)
 
 }

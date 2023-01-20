@@ -11,7 +11,7 @@
 
     <item
         android:id="@+id/savedHideFragment"
-        android:icon="@drawable/ic_baseline_live_tv_24"
+        android:icon="@drawable/ic_baseline_save_24"
         android:title="@string/saveMoviesHide" />
 
 </menu>
