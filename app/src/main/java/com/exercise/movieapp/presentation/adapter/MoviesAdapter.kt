@@ -6,6 +6,8 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.AsyncListDiffer
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
+import com.exercise.movieapp.BuildConfig
 import com.exercise.movieapp.data.model.Movies
 import com.exercise.movieapp.data.model.MoviesHide
 import com.exercise.movieapp.databinding.MoviesListItemBinding
@@ -61,9 +63,9 @@ class MoviesAdapter:RecyclerView.Adapter<MoviesAdapter.MoviesViewHolder>() {
 
 
 
-//               Glide.with(binding.ivMoviesImage.context).
-//               load(Movies.urlToImage).
-//               into(binding.ivMoviesImage)
+               Glide.with(binding.posterImg).
+               load(BuildConfig.BASE_URL+movies.poster).
+               into(binding.posterImg)
 
                binding.root.setOnClickListener {
                   onItemClickListener?.let {

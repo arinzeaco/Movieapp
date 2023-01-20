@@ -15,14 +15,12 @@ class MoviesRepositoryImpl(
     private val moviesRemoteDataSource: MoviesRemoteDataSource,
     private val moviesLocalDataSource: MoviesLocalDataSource
 ):MoviesRepository {
-    override suspend fun getMovies(country : String, page : Int): Resource<APIResponse> {
+    override suspend fun getMovies(): Resource<APIResponse> {
         return responseToResource(moviesRemoteDataSource.getMovies())
     }
 
     override suspend fun getSearchedMovies(
-        country: String,
         searchQuery: String,
-        page: Int
     ): Resource<APIResponse> {
         return responseToResource(
             moviesRemoteDataSource.getSearchedMovies(searchQuery)

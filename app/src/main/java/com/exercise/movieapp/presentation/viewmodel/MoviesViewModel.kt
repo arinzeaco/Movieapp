@@ -5,6 +5,8 @@ import android.content.Context
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
 import android.os.Build
+import android.util.Log
+import android.widget.Toast
 import androidx.lifecycle.*
 import com.exercise.movieapp.data.model.APIResponse
 import com.exercise.movieapp.data.model.Movies
@@ -33,11 +35,30 @@ class MoviesViewModel @Inject constructor(
     val movies: MutableLiveData<Resource<APIResponse>> = MutableLiveData()
     val progressBar: MutableLiveData<Boolean> = MutableLiveData(true)
 
-    fun getMovies(country: String, page: Int) = viewModelScope.launch(Dispatchers.IO) {
+    fun getMovies() = viewModelScope.launch(Dispatchers.IO) {
         if (isNetworkAvailable(app)) {
-            val apiResult = getMoviesUseCase.execute(country, page)
+            val apiResult = getMoviesUseCase.execute()
             getMoviesResult(apiResult)
+        }else{
+            searchedMovies.postValue(Resource.Error("No internet connection"))
+
         }
+    }
+    val searchedMovies: MutableLiveData<Resource<APIResponse>> = MutableLiveData()
+
+    fun searchMovies(
+        searchQuery: String,
+    ) = viewModelScope.launch {
+        searchedMovies.postValue(Resource.Loading())
+            if (isNetworkAvailable(app)) {
+                val response = getSearchedMoviesUseCase.execute(
+                    searchQuery,
+                )
+                getMoviesSearchedResult(response)
+            } else {
+                searchedMovies.postValue(Resource.Error("No internet connection"))
+            }
+
     }
 
     private fun isNetworkAvailable(context: Context?): Boolean {
@@ -71,29 +92,6 @@ class MoviesViewModel @Inject constructor(
     }
 
     //search
-    val searchedMovies: MutableLiveData<Resource<APIResponse>> = MutableLiveData()
-
-    fun searchMovies(
-        country: String,
-        searchQuery: String,
-        page: Int
-    ) = viewModelScope.launch {
-        searchedMovies.postValue(Resource.Loading())
-        try {
-            if (isNetworkAvailable(app)) {
-                val response = getSearchedMoviesUseCase.execute(
-                    country,
-                    searchQuery,
-                    page
-                )
-                searchedMovies.postValue(response)
-            } else {
-                searchedMovies.postValue(Resource.Error("No internet connection"))
-            }
-        } catch (e: Exception) {
-            searchedMovies.postValue(Resource.Error(e.message.toString()))
-        }
-    }
 
     //local data
     fun saveFavoriteMovies(moviesFavorite: MoviesFavorite) = viewModelScope.launch {
@@ -150,6 +148,23 @@ class MoviesViewModel @Inject constructor(
     }
 
     private fun getMoviesResult(result: Resource<APIResponse>) {
+        when (result) {
+            is Resource.Loading -> {
+                progressBar.value = true
+            }
+            is Resource.Success -> {
+
+                result.data?.let {
+                    saveMovies(it.Movies)
+                }
+            }
+            is Resource.Error -> {
+                progressBar.value = false
+
+            }
+        }
+    }
+    fun getMoviesSearchedResult(result: Resource<APIResponse>) {
         when (result) {
             is Resource.Loading -> {
                 progressBar.value = true

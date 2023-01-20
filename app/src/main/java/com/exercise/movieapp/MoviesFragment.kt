@@ -22,10 +22,6 @@ class MoviesFragment : Fragment() {
     private lateinit var viewModel: MoviesViewModel
     private lateinit var moviesAdapter: MoviesAdapter
     private lateinit var fragmentMoviesBinding: FragmentMoviesBinding
-    private var country = "us"
-    private var page = 1
-    private var isScrolling = false
-    private var isLastPage = false
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -50,7 +46,7 @@ class MoviesFragment : Fragment() {
         }
         initRecyclerView()
         setSearchView()
-        viewModel.getMovies(country, page)
+        viewModel.getMovies()
 
         viewModel.getSavedMovies().observe(viewLifecycleOwner) {
 
@@ -58,6 +54,7 @@ class MoviesFragment : Fragment() {
 
 
         }
+        (activity as MainActivity).hideBottomNav(false)
 
 
     }
@@ -67,7 +64,6 @@ class MoviesFragment : Fragment() {
         fragmentMoviesBinding.rvMovies.apply {
             adapter = moviesAdapter
             layoutManager = LinearLayoutManager(activity)
-            addOnScrollListener(this@MoviesFragment.onScrollListener)
         }
 
     }
@@ -81,49 +77,22 @@ class MoviesFragment : Fragment() {
     }
 
 
-    private val onScrollListener = object : RecyclerView.OnScrollListener() {
-        override fun onScrollStateChanged(recyclerView: RecyclerView, Moviestate: Int) {
-            super.onScrollStateChanged(recyclerView, Moviestate)
-            if (Moviestate == AbsListView.OnScrollListener.SCROLL_STATE_TOUCH_SCROLL) {
-                isScrolling = true
-            }
-
-        }
-
-        override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
-            super.onScrolled(recyclerView, dx, dy)
-            val layoutManager = fragmentMoviesBinding.rvMovies.layoutManager as LinearLayoutManager
-            val sizeOfTheCurrentList = layoutManager.itemCount
-            val visibleItems = layoutManager.childCount
-            val topPosition = layoutManager.findFirstVisibleItemPosition()
-            val hasReachedToEnd = topPosition + visibleItems >= sizeOfTheCurrentList
-            val shouldPaginate =
-                !viewModel.progressBar.value!! && !isLastPage && hasReachedToEnd && isScrolling
-            if (shouldPaginate) {
-                page++
-                viewModel.getMovies(country, page)
-                isScrolling = false
-
-            }
-        }
-    }
 
     //search
     private fun setSearchView() {
         fragmentMoviesBinding.svMovies.setOnQueryTextListener(
             object : SearchView.OnQueryTextListener {
                 override fun onQueryTextSubmit(p0: String?): Boolean {
-                    viewModel.searchMovies("us", p0.toString(), page)
+                    viewModel.searchMovies(p0.toString())
                     viewSearchedMovies()
                     return false
                 }
 
                 override fun onQueryTextChange(p0: String?): Boolean {
-                    MainScope().launch {
-                        delay(300)
-                        viewModel.searchMovies("us", p0.toString(), page)
+
+                        viewModel.searchMovies(p0.toString())
                         viewSearchedMovies()
-                    }
+
                     return false
                 }
 

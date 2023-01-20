@@ -2,6 +2,7 @@ package com.exercise.movieapp
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.view.View
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.setupWithNavController
@@ -30,7 +31,16 @@ class MainActivity : AppCompatActivity() {
         binding.bnvMovies.setupWithNavController(
             navController
         )
+
         viewModel = ViewModelProvider(this)
             .get(MoviesViewModel::class.java)
+    }
+    fun hideBottomNav(hide: Boolean) {
+        if(hide){
+            binding.bnvMovies.visibility= View.INVISIBLE
+        }else{
+            binding.bnvMovies.visibility= View.VISIBLE
+
+        }
     }
 }

@@ -36,6 +36,7 @@ class SavedHideFragment : Fragment() {
             val bundle = Bundle().apply {
                 putSerializable("selected_Movies", it)
             }
+            (activity as MainActivity).hideBottomNav(false)
 
             findNavController().navigate(
                 R.id.action_savedFragment_to_infoFragment,

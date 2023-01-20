@@ -5,10 +5,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.webkit.WebViewClient
-import androidx.navigation.NavArgs
 import androidx.navigation.fragment.navArgs
-import com.exercise.movieapp.data.model.Movies
 import com.exercise.movieapp.data.model.MoviesFavorite
 import com.exercise.movieapp.data.model.MoviesHide
 import com.exercise.movieapp.databinding.FragmentMoviesInfoBinding
@@ -34,7 +31,7 @@ class InfoFragment : Fragment() {
         val movies = args.selectedMovies
 
         viewModel=(activity as MainActivity).viewModel
-
+        (activity as MainActivity).hideBottomNav(true)
         fragmentInfoBinding.title.text = movies.title
         fragmentInfoBinding.description.text = movies.description
         if(movies.adult!!){
@@ -52,7 +49,7 @@ class InfoFragment : Fragment() {
             val datas=MoviesHide( movies.id, movies.title, movies.poster,
                 movies.adult,movies.description)
             viewModel.saveMoviesHide(datas)
-            Snackbar.make(view,"Saved Successfully!",Snackbar.LENGTH_LONG).show()
+            Snackbar.make(view,"Hidden Successfully!",Snackbar.LENGTH_LONG).show()
         }
     }
 }

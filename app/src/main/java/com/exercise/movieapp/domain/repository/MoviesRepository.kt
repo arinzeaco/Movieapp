@@ -9,8 +9,8 @@ import kotlinx.coroutines.flow.Flow
 
 interface MoviesRepository{
 
-      suspend fun getMovies(country : String, page : Int): Resource<APIResponse>
-      suspend fun getSearchedMovies(country: String,searchQuery:String,page: Int) : Resource<APIResponse>
+      suspend fun getMovies(): Resource<APIResponse>
+      suspend fun getSearchedMovies(searchQuery:String) : Resource<APIResponse>
 
       suspend fun saveMoviesToDB(movies: Movies)
       suspend fun saveMoviesToDB(movies: List<Movies>)
