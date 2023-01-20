@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/savedFragment"
+        android:icon="@drawable/ic_baseline_save_24"
+        android:title="@string/saveMovies" />
+    <item
+        android:id="@+id/MoviesFragment"
+        android:icon="@drawable/ic_baseline_live_tv_24"
+        android:title="@string/movies" />
+
+    <item
+        android:id="@+id/savedHideFragment"
+        android:icon="@drawable/ic_baseline_live_tv_24"
+        android:title="@string/saveMoviesHide" />
+
+</menu>
