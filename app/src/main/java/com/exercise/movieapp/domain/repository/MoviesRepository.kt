@@ -21,6 +21,7 @@ interface MoviesRepository{
 
 
 
+      fun getSavedMovies(ids:List<Int>): Flow<List<Movies>>
       fun getSavedMovies(): Flow<List<Movies>>
       fun getSavedMoviesFavorite(): Flow<List<MoviesFavorite>>
 

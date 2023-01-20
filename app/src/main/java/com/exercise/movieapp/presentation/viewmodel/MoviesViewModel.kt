@@ -102,9 +102,9 @@ class MoviesViewModel @Inject constructor(
         saveMoviesUseCase.execute(movies)
     }
 
-
     fun getSavedMovies() = liveData {
         getSavedMoviesUseCase.execute().collect {
+            Log.i("This me",getSavedMoviesHide().value.toString())
 //            val filteredList:List<Movies>
 //            if (getSavedMoviesHide().value?.isNotEmpty() == true) {
 //                 filteredList = it.filterNot { element1 ->
@@ -112,9 +112,19 @@ class MoviesViewModel @Inject constructor(
 //                        element1.id == element2.id
 //                    }
 //                }
-                emit(it)
+
+            emit(it)
 
 //            }
+        }
+    }
+    fun getSavedMovies(ids:List<Int>) = liveData {
+        getSavedMoviesUseCase.execute(ids).collect {
+
+            Log.i("This me",it.toString())
+
+            emit(it)
+
         }
     }
 

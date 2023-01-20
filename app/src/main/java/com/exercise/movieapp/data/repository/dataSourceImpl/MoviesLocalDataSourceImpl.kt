@@ -36,6 +36,10 @@ class MoviesLocalDataSourceImpl(
         moviesDAO.insert(movies)
     }
 
+    override fun getSavedMovies(ids: List<Int>): Flow<List<Movies>> {
+        return moviesDAO.getAllMovies(ids)
+    }
+
     override fun getSavedMovies(): Flow<List<Movies>> {
         return moviesDAO.getAllMovies()
     }

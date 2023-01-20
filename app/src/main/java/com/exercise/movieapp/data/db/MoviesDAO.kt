@@ -13,13 +13,12 @@ interface MoviesDAO {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insert(movies: List<Movies>)
 
+    @Query("SELECT * FROM Movies WHERE id NOT IN (:ids)")
+    fun getAllMovies(ids: List<Int>): Flow<List<Movies>>
+
     @Query("SELECT * FROM Movies")
     fun getAllMovies(): Flow<List<Movies>>
 
-
-
-//    @Query("SELECT * FROM Movies INNER JOIN MoviesFavorite ON Movies.id != MoviesFavorite.id")
-//    fun getAllMovies(): Flow<List<Movies>>
 
 
     @Delete

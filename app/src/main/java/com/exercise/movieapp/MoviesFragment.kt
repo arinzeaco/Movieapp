@@ -12,6 +12,7 @@ import android.widget.Toast
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.exercise.movieapp.data.model.MoviesHide
 import com.exercise.movieapp.databinding.FragmentMoviesBinding
 import com.exercise.movieapp.presentation.adapter.MoviesAdapter
 import com.exercise.movieapp.presentation.viewmodel.MoviesViewModel
@@ -21,6 +22,8 @@ import kotlinx.coroutines.*
 class MoviesFragment : Fragment() {
     private lateinit var viewModel: MoviesViewModel
     private lateinit var moviesAdapter: MoviesAdapter
+    private lateinit var ids:List<MoviesHide>
+    private lateinit var moviesList:List<Int>
     private lateinit var fragmentMoviesBinding: FragmentMoviesBinding
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -47,18 +50,23 @@ class MoviesFragment : Fragment() {
         initRecyclerView()
         setSearchView()
         viewModel.getMovies()
+        if (viewModel.getSavedMoviesHide().value?.isNotEmpty() == true) {
+            ids = viewModel.getSavedMoviesHide().value!!
 
-        viewModel.getSavedMovies().observe(viewLifecycleOwner) {
-
+            val moviesList = ids.map { it.id }.toList()
+            viewModel.getSavedMovies(moviesList as List<Int>).observe(viewLifecycleOwner) {
                 moviesAdapter.differ.submitList(it)
-
-
+            }
+        }else{
+            viewModel.getSavedMovies().observe(viewLifecycleOwner) {
+                moviesAdapter.differ.submitList(it)
+            }
         }
+
+
         (activity as MainActivity).hideBottomNav(false)
 
-
     }
-
 
     private fun initRecyclerView() {
         fragmentMoviesBinding.rvMovies.apply {
@@ -77,7 +85,6 @@ class MoviesFragment : Fragment() {
     }
 
 
-
     //search
     private fun setSearchView() {
         fragmentMoviesBinding.svMovies.setOnQueryTextListener(
@@ -90,8 +97,8 @@ class MoviesFragment : Fragment() {
 
                 override fun onQueryTextChange(p0: String?): Boolean {
 
-                        viewModel.searchMovies(p0.toString())
-                        viewSearchedMovies()
+                    viewModel.searchMovies(p0.toString())
+                    viewSearchedMovies()
 
                     return false
                 }
@@ -104,6 +111,22 @@ class MoviesFragment : Fragment() {
         }
     }
 
+    override fun onResume() {
+        super.onResume()
+        viewModel.getMovies()
+        if (viewModel.getSavedMoviesHide().value?.isNotEmpty() == true) {
+            ids = viewModel.getSavedMoviesHide().value!!
+
+            val moviesList = ids.map { it.id }.toList()
+            viewModel.getSavedMovies(moviesList as List<Int>).observe(viewLifecycleOwner) {
+                moviesAdapter.differ.submitList(it)
+            }
+        }else{
+            viewModel.getSavedMovies().observe(viewLifecycleOwner) {
+                moviesAdapter.differ.submitList(it)
+            }
+        }
+    }
 
     fun viewSearchedMovies() {
         viewModel.searchedMovies.observe(viewLifecycleOwner, { response ->

@@ -59,6 +59,10 @@ class MoviesRepositoryImpl(
 
 
 
+    override fun getSavedMovies(ids: List<Int>): Flow<List<Movies>> {
+        return moviesLocalDataSource.getSavedMovies(ids)
+    }
+
     override fun getSavedMovies(): Flow<List<Movies>> {
         return moviesLocalDataSource.getSavedMovies()
     }

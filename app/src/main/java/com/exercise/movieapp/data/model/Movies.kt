@@ -11,7 +11,7 @@ import java.io.Serializable
     tableName = "Movies",
 )
 data class Movies(
-    @PrimaryKey(autoGenerate = true)
+    @PrimaryKey(autoGenerate = false)
     val id : Int? = null,
 
     @SerializedName("original_title")
