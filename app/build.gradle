@@ -16,8 +16,9 @@ android {
         targetSdk 33
         versionCode 1
         versionName "1.0"
-        buildConfigField("String","API_KEY",'"f246855d870b02a0aa42e1487692d5bb"')
-        buildConfigField("String","BASE_URL",'"https://api.themoviedb.org/3/"')
+        buildConfigField("String","API_KEY",'"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2Mzg5ZjI4ZWExNTUxNGJlMDczMjI1ZjYiLCJpYXQiOjE2NzQyNzU0NjMsImV4cCI6MTY3NDg4MDI2M30.R124j-rPCfFqt0o8SR8PlDBkG5RJIipMZhlQF657LNE"')
+//        buildConfigField("String","BASE_URL",'"https://api.themoviedb.org/3/"')
+        buildConfigField("String","BASE_URL",'"https://apis.woozeee.com/api/v1/"')
 //        buildConfigField "String", "BACKEND_HOST", '"www.paid.com"'
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"

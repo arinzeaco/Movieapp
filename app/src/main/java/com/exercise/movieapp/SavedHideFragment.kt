@@ -38,13 +38,20 @@ class SavedHideFragment : Fragment() {
             }
             (activity as MainActivity).hideBottomNav(false)
 
-            findNavController().navigate(
-                R.id.action_savedFragment_to_infoFragment,
-                bundle
-            )
+//            findNavController().navigate(
+//                R.id.action_savedFragment_to_infoFragment,
+//                bundle
+//            )
         }
         initRecyclerView()
-        viewModel.getSavedMoviesHide().observe(viewLifecycleOwner) {
+        viewModel.getSavedMoviesHide()
+        viewModel.moviesHide.observe(viewLifecycleOwner) {
+            if (it.isNotEmpty()){
+                fragmentSavedBinding.empty.visibility=View.GONE
+            }else{
+                fragmentSavedBinding.empty.visibility=View.VISIBLE
+
+            }
             moviesAdapter.differ.submitList(it)
         }
 

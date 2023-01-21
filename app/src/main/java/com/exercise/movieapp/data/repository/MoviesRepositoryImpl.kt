@@ -19,13 +19,13 @@ class MoviesRepositoryImpl(
         return responseToResource(moviesRemoteDataSource.getMovies())
     }
 
-    override suspend fun getSearchedMovies(
-        searchQuery: String,
-    ): Resource<APIResponse> {
-        return responseToResource(
-            moviesRemoteDataSource.getSearchedMovies(searchQuery)
-        )
-    }
+//    override suspend fun getSearchedMovies(
+//        searchQuery: String,
+//    ): Resource<APIResponse> {
+//        return responseToResource(
+//            moviesRemoteDataSource.getSearchedMovies(searchQuery)
+//        )
+//    }
 
     private fun responseToResource(response:Response<APIResponse>):Resource<APIResponse>{
         if(response.isSuccessful){
@@ -49,8 +49,8 @@ class MoviesRepositoryImpl(
         moviesLocalDataSource.saveMoviesToDB(movies)
     }
 
-    override suspend fun deleteMovies(movies: Movies) {
-        moviesLocalDataSource.deleteMoviesFromDB(movies)
+    override suspend fun deleteMovies() {
+        moviesLocalDataSource.deleteMoviesFromDB()
     }
 
     override suspend fun deleteMoviesFavorite(moviesFavorite: MoviesFavorite) {
@@ -59,8 +59,8 @@ class MoviesRepositoryImpl(
 
 
 
-    override fun getSavedMovies(ids: List<Int>): Flow<List<Movies>> {
-        return moviesLocalDataSource.getSavedMovies(ids)
+    override fun getSavedMovies(search:String,ids: List<String>): Flow<List<Movies>> {
+        return moviesLocalDataSource.getSavedMovies(search,ids)
     }
 
     override fun getSavedMovies(): Flow<List<Movies>> {

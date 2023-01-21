@@ -15,7 +15,9 @@ import com.exercise.movieapp.data.model.MoviesHide
 import com.exercise.movieapp.data.util.Resource
 import com.exercise.movieapp.domain.usecase.*
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import java.lang.Exception
 import javax.inject.Inject
@@ -24,7 +26,6 @@ import javax.inject.Inject
 class MoviesViewModel @Inject constructor(
     private val app: Application,
     private val getMoviesUseCase: GetMoviesUseCase,
-    private val getSearchedMoviesUseCase: GetSearchedMoviesUseCase,
     private val saveMoviesUseCase: SaveMoviesUseCase,
     private val saveMoviesHideUseCase: SaveMoviesHideUseCase,
     private val getSavedMoviesUseCase: GetSavedMoviesUseCase,
@@ -33,7 +34,13 @@ class MoviesViewModel @Inject constructor(
     private val deleteSavedMoviesHideUseCase: DeleteSavedMoviesHideUseCase
 ) : AndroidViewModel(app) {
     val movies: MutableLiveData<Resource<APIResponse>> = MutableLiveData()
-    val progressBar: MutableLiveData<Boolean> = MutableLiveData(true)
+    val _progressBar = MutableLiveData<Boolean>()
+    val progressBar: LiveData<Boolean>
+        get() = _progressBar
+    val moviesHide: MutableLiveData<List<MoviesHide>> = MutableLiveData()
+    val moviesFilter: MutableLiveData<List<Movies>> = MutableLiveData()
+    val job = Job()
+    val coroutineScope = CoroutineScope(Dispatchers.Main + job)
 
     fun getMovies() = viewModelScope.launch(Dispatchers.IO) {
         if (isNetworkAvailable(app)) {
@@ -45,21 +52,6 @@ class MoviesViewModel @Inject constructor(
         }
     }
     val searchedMovies: MutableLiveData<Resource<APIResponse>> = MutableLiveData()
-
-    fun searchMovies(
-        searchQuery: String,
-    ) = viewModelScope.launch {
-        searchedMovies.postValue(Resource.Loading())
-            if (isNetworkAvailable(app)) {
-                val response = getSearchedMoviesUseCase.execute(
-                    searchQuery,
-                )
-                getMoviesSearchedResult(response)
-            } else {
-                searchedMovies.postValue(Resource.Error("No internet connection"))
-            }
-
-    }
 
     private fun isNetworkAvailable(context: Context?): Boolean {
         if (context == null) return false
@@ -104,39 +96,33 @@ class MoviesViewModel @Inject constructor(
 
     fun getSavedMovies() = liveData {
         getSavedMoviesUseCase.execute().collect {
-            Log.i("This me",getSavedMoviesHide().value.toString())
-//            val filteredList:List<Movies>
-//            if (getSavedMoviesHide().value?.isNotEmpty() == true) {
-//                 filteredList = it.filterNot { element1 ->
-//                    getSavedMoviesHide().value!!.any { element2 ->
-//                        element1.id == element2.id
-//                    }
-//                }
+
 
             emit(it)
 
 //            }
         }
     }
-    fun getSavedMovies(ids:List<Int>) = liveData {
-        getSavedMoviesUseCase.execute(ids).collect {
+    fun getSavedMovies(search:String, idd: List<String>) {
+        coroutineScope.launch {
 
-            Log.i("This me",it.toString())
-
-            emit(it)
-
+            getSavedMoviesUseCase.execute(search,idd).collect {
+                moviesFilter.value = it
+            }
         }
+
     }
 
     fun getSavedFavoriteMovies() = liveData {
         getSavedMoviesUseCase.executeFavorite().collect {
+
             emit(it)
         }
     }
 
 
-    fun deleteMovies(Movies: Movies) = viewModelScope.launch {
-        deleteSavedMoviesUseCase.execute(Movies)
+    fun deleteMovies() = viewModelScope.launch {
+        deleteSavedMoviesUseCase.execute()
     }
 
     fun deleteMoviesFavorite(Movies: MoviesFavorite) = viewModelScope.launch {
@@ -147,9 +133,14 @@ class MoviesViewModel @Inject constructor(
         saveMoviesHideUseCase.execute(movieshide)
     }
 
-    fun getSavedMoviesHide() = liveData {
-        getSavedMoviesHideUseCase.execute().collect {
-            emit(it)
+    fun getSavedMoviesHide() {
+//        getSavedMoviesHideUseCase.execute()
+        coroutineScope.launch {
+
+            getSavedMoviesHideUseCase.execute().collect {
+
+                moviesHide.value = it
+            }
         }
     }
 
@@ -160,37 +151,27 @@ class MoviesViewModel @Inject constructor(
     private fun getMoviesResult(result: Resource<APIResponse>) {
         when (result) {
             is Resource.Loading -> {
-                progressBar.value = true
+                _progressBar.value = true
             }
             is Resource.Success -> {
 
                 result.data?.let {
-                    saveMovies(it.Movies)
+                    viewModelScope.launch {
+                        _progressBar.value = false
+
+                        deleteSavedMoviesUseCase.execute()
+                    }
+
+                    saveMovies(it.movies)
                 }
             }
             is Resource.Error -> {
-                progressBar.value = false
+                _progressBar.value = false
 
             }
         }
     }
-    fun getMoviesSearchedResult(result: Resource<APIResponse>) {
-        when (result) {
-            is Resource.Loading -> {
-                progressBar.value = true
-            }
-            is Resource.Success -> {
 
-                result.data?.let {
-                    saveMovies(it.Movies)
-                }
-            }
-            is Resource.Error -> {
-                progressBar.value = false
-
-            }
-        }
-    }
 
 }
 

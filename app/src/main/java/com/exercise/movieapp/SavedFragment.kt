@@ -48,9 +48,7 @@ class SavedFragment : Fragment() {
             )
         }
         initRecyclerView()
-        viewModel.getSavedFavoriteMovies().observe(viewLifecycleOwner) {movies->
-            moviesFavoriteAdapter.differ.submitList(movies)
-        }
+        fragmentSavedBinding.empty.text=getString(R.string.you_have_no_favorite_movies)
 
         val itemTouchHelperCallback = object : ItemTouchHelper.SimpleCallback(
             ItemTouchHelper.UP or ItemTouchHelper.DOWN,
@@ -68,6 +66,7 @@ class SavedFragment : Fragment() {
                 val position = viewHolder.adapterPosition
                 val Movies = moviesFavoriteAdapter.differ.currentList[position]
                 viewModel.deleteMoviesFavorite(Movies)
+//                fecthFavorite()
                 Snackbar.make(view, "Deleted Successfully", Snackbar.LENGTH_LONG)
                     .apply {
                         setAction("Undo") {
@@ -79,6 +78,7 @@ class SavedFragment : Fragment() {
             }
 
         }
+        fecthFavorite()
 
         ItemTouchHelper(itemTouchHelperCallback).apply {
             attachToRecyclerView(fragmentSavedBinding.rvSaved)
@@ -92,6 +92,18 @@ class SavedFragment : Fragment() {
             adapter = moviesFavoriteAdapter
             layoutManager = LinearLayoutManager(activity)
         }
+    }
+    private fun fecthFavorite(){
+        viewModel.getSavedFavoriteMovies().observe(viewLifecycleOwner) {movies->
+            if (movies.isNotEmpty()){
+                fragmentSavedBinding.empty.visibility=View.GONE
+            }else{
+                fragmentSavedBinding.empty.visibility=View.VISIBLE
+
+            }
+            moviesFavoriteAdapter.differ.submitList(movies)
+        }
+
     }
 
 

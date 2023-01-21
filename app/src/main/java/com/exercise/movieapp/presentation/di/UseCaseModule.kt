@@ -19,13 +19,7 @@ class UseCaseModule {
       return GetMoviesUseCase(MoviesRepository)
    }
 
-   @Singleton
-   @Provides
-   fun provideGetSearchedMoviesUseCase(
-      MoviesRepository: MoviesRepository
-   ):GetSearchedMoviesUseCase{
-      return GetSearchedMoviesUseCase(MoviesRepository)
-   }
+
 
    @Singleton
    @Provides

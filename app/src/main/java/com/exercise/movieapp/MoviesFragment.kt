@@ -1,30 +1,25 @@
 package com.exercise.movieapp
 
 import android.os.Bundle
-import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.AbsListView
 import android.widget.SearchView
-import android.widget.Toast
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
-import com.exercise.movieapp.data.model.MoviesHide
+import com.exercise.movieapp.data.model.Movies
 import com.exercise.movieapp.databinding.FragmentMoviesBinding
 import com.exercise.movieapp.presentation.adapter.MoviesAdapter
 import com.exercise.movieapp.presentation.viewmodel.MoviesViewModel
-import kotlinx.coroutines.*
 
 
 class MoviesFragment : Fragment() {
     private lateinit var viewModel: MoviesViewModel
     private lateinit var moviesAdapter: MoviesAdapter
-    private lateinit var ids:List<MoviesHide>
-    private lateinit var moviesList:List<Int>
     private lateinit var fragmentMoviesBinding: FragmentMoviesBinding
+     lateinit var moviesList:List<String>
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -50,23 +45,13 @@ class MoviesFragment : Fragment() {
         initRecyclerView()
         setSearchView()
         viewModel.getMovies()
-        if (viewModel.getSavedMoviesHide().value?.isNotEmpty() == true) {
-            ids = viewModel.getSavedMoviesHide().value!!
-
-            val moviesList = ids.map { it.id }.toList()
-            Log.i("lllllluuuu", moviesList.toString())
-            viewModel.getSavedMovies(moviesList as List<Int>).observe(viewLifecycleOwner) {
-                moviesAdapter.differ.submitList(it)
-            }
-        }else{
-            viewModel.getSavedMovies().observe(viewLifecycleOwner) {
-                moviesAdapter.differ.submitList(it)
-            }
+        viewModel.getSavedMovies().observe(viewLifecycleOwner) {
+            displayEmptyText(it)
+            moviesAdapter.differ.submitList(it)
         }
 
-
         (activity as MainActivity).hideBottomNav(false)
-       showProgressBar()
+        showProgressBar()
     }
 
     private fun initRecyclerView() {
@@ -78,10 +63,13 @@ class MoviesFragment : Fragment() {
     }
 
     private fun showProgressBar() {
-        if (viewModel.progressBar.value!!) {
-            fragmentMoviesBinding.progressBar.visibility = View.VISIBLE
-        } else {
-            fragmentMoviesBinding.progressBar.visibility = View.INVISIBLE
+        viewModel.progressBar.observe(viewLifecycleOwner) {
+
+            if (it!!) {
+                fragmentMoviesBinding.progressBar.visibility = View.VISIBLE
+            } else {
+                fragmentMoviesBinding.progressBar.visibility = View.INVISIBLE
+            }
         }
     }
 
@@ -91,15 +79,14 @@ class MoviesFragment : Fragment() {
         fragmentMoviesBinding.svMovies.setOnQueryTextListener(
             object : SearchView.OnQueryTextListener {
                 override fun onQueryTextSubmit(p0: String?): Boolean {
-                    viewModel.searchMovies(p0.toString())
-                    viewSearchedMovies()
+                    viewSearchedMovies(p0.toString())
                     return false
                 }
 
                 override fun onQueryTextChange(p0: String?): Boolean {
 
-                    viewModel.searchMovies(p0.toString())
-                    viewSearchedMovies()
+//                    viewModel.searchMovies(p0.toString())
+                    viewSearchedMovies(p0.toString())
 
                     return false
                 }
@@ -113,32 +100,41 @@ class MoviesFragment : Fragment() {
     }
 
 
-    fun viewSearchedMovies() {
-        viewModel.searchedMovies.observe(viewLifecycleOwner, { response ->
-            when (response) {
-                is com.exercise.movieapp.data.util.Resource.Success -> {
+    fun viewSearchedMovies(search: String) {
 
-                    response.data?.let {
-                        Log.i("MYTAG", "came here ${it.Movies.toList().size}")
-                        moviesAdapter.differ.submitList(it.Movies.toList())
+        viewModel.getSavedMoviesHide()
+        if (viewModel.moviesHide.value?.isNotEmpty() == true) {
+            viewModel.moviesHide.observe(viewLifecycleOwner) {
 
-                    }
-                }
-                is com.exercise.movieapp.data.util.Resource.Error -> {
-                    response.message?.let {
-                        Toast.makeText(activity, "An error occurred : $it", Toast.LENGTH_LONG)
-                            .show()
-                    }
-                }
-
-                is com.exercise.movieapp.data.util.Resource.Loading -> {
-                    showProgressBar()
-                }
+                moviesList = viewModel.moviesHide.value!!.map {
+                    it.idd.toString()
+                }.toList()
+                viewModel.getSavedMovies(search, moviesList)
 
             }
-        })
+            viewModel.moviesFilter.observe(viewLifecycleOwner) {
+                displayEmptyText(it)
+                moviesAdapter.differ.submitList(it)
+            }
+
+        } else {
+            viewModel.getSavedMovies(search, listOf())
+
+            viewModel.moviesFilter.observe(viewLifecycleOwner) {
+                displayEmptyText(it)
+                moviesAdapter.differ.submitList(it)
+            }
+        }
     }
 
+    fun displayEmptyText(movies: List<Movies>) {
+        if (movies.isNotEmpty()){
+            fragmentMoviesBinding.empty.visibility=View.GONE
+        }else{
+            fragmentMoviesBinding.empty.visibility=View.VISIBLE
+
+        }
+    }
 }
 
 

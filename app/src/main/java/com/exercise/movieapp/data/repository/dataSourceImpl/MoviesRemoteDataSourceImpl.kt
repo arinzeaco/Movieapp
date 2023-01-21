@@ -12,9 +12,9 @@ class MoviesRemoteDataSourceImpl(
           return moviesAPIService.getMovies()
     }
 
-    override suspend fun getSearchedMovies(
-        searchQuery: String,
-    ): Response<APIResponse> {
-        return moviesAPIService.getSearchedMovies(searchQuery)
-    }
+//    override suspend fun getSearchedMovies(
+//        searchQuery: String,
+//    ): Response<APIResponse> {
+//        return moviesAPIService.getSearchedMovies(searchQuery)
+//    }
 }

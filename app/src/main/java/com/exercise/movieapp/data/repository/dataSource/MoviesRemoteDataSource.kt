@@ -5,5 +5,5 @@ import retrofit2.Response
 
 interface MoviesRemoteDataSource {
     suspend fun getMovies():Response<APIResponse>
-    suspend fun getSearchedMovies(searchQuery:String):Response<APIResponse>
+//    suspend fun getSearchedMovies(searchQuery:String):Response<APIResponse>
 }

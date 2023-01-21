@@ -15,9 +15,9 @@ interface MoviesLocalDataSource {
     suspend fun saveMoviesToDB(movies: List<Movies>)
     suspend fun saveMoviesToDB(movies: Movies)
 
-    fun getSavedMovies(ids: List<Int>): Flow<List<Movies>>
+    fun getSavedMovies(search:String,ids: List<String>): Flow<List<Movies>>
     fun getSavedMovies(): Flow<List<Movies>>
-    suspend fun deleteMoviesFromDB(movies: Movies)
+    suspend fun deleteMoviesFromDB()
 
 
     suspend fun saveMoviesHideToDB(moviesHide: MoviesHide)

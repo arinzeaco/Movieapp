@@ -6,8 +6,8 @@ import com.exercise.movieapp.domain.repository.MoviesRepository
 import kotlinx.coroutines.flow.Flow
 
 class GetSavedMoviesUseCase(private val moviesRepository: MoviesRepository) {
-    fun execute(ids:List<Int>): Flow<List<Movies>>{
-        return moviesRepository.getSavedMovies(ids)
+    fun execute(search:String,ids:List<String>): Flow<List<Movies>>{
+        return moviesRepository.getSavedMovies(search,ids)
     }
     fun execute(): Flow<List<Movies>>{
         return moviesRepository.getSavedMovies()

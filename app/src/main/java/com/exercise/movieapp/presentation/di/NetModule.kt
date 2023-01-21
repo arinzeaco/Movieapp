@@ -50,6 +50,10 @@ class NetModule {
             var request = chain.request()
 
             request = request.newBuilder()
+                .addHeader("Authorization", "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2MTNlNTUzMmNiMWM4YTM2NDBiNjUxNjIiLCJpYXQiOjE2NjM2ODY1MDYsImV4cCI6MTY2NDI5MTMwNn0.sCn_k17QjRPlqFxDcVLlITK3_4zUZHTocvraIo1h1fU")
+
+//                    .addHeader("Authorzization", "")
+                .addHeader("Content-type", "application/json")
                 .build()
 
             chain.proceed(request)

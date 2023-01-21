@@ -13,16 +13,20 @@ interface MoviesDAO {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insert(movies: List<Movies>)
 
-    @Query("SELECT * FROM Movies WHERE id NOT IN (:ids)")
-    fun getAllMovies(ids: List<Int>): Flow<List<Movies>>
+    @Query("SELECT * FROM Movies WHERE title LIKE :search || '%' AND idd NOT IN (:idd)")
+//    @Query("SELECT * FROM Movies WHERE idd NOT IN (:idd)")
+   fun getAllMovies(search:String, idd:List<String>):
+            Flow<List<Movies>>
+
 
     @Query("SELECT * FROM Movies")
     fun getAllMovies(): Flow<List<Movies>>
 
 
 
-    @Delete
-    suspend fun deleteMovies(Movies: Movies)
+    @Query("DELETE FROM Movies")
+
+    suspend fun deleteMovies()
 
 
 

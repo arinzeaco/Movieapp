@@ -6,6 +6,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.AsyncListDiffer
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
 import com.exercise.movieapp.data.model.MoviesHide
 import com.exercise.movieapp.databinding.MoviesListItemBinding
 
@@ -51,15 +52,12 @@ class MoviesHideAdapter:RecyclerView.Adapter<MoviesHideAdapter.MoviesViewHolder>
                Log.i("MYTAG","came here ${movies.title}")
                binding.title.text = movies.title
                binding.description.text = movies.description
-               if(movies.adult!!){
-                   binding.rating.text = "18+"
-               }else{
-                   binding.rating.text = "PG"
-               }
+               binding.rating.text = movies.ratings
 
-//               Glide.with(binding.ivMoviesImage.context).
-//               load(Movies.urlToImage).
-//               into(binding.ivMoviesImage)
+
+               Glide.with(binding.posterImg).
+               load(movies.poster)
+                   .into(binding.posterImg)
 
                binding.root.setOnClickListener {
                   onItemClickListener?.let {

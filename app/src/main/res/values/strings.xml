@@ -15,7 +15,10 @@
     <string name="description">Description:</string>
     <string name="rating">Rating:</string>
     <string name="hide_movie">Hide Movie</string>
-    <string name="save_movie">Save Movie</string>
+    <string name="save_movie">Favorite Movie</string>
+    <string name="you_have_no_favorite_movies">You have no favorite movies</string>
+    <string name="you_have_no_hidden_movies">You have no hidden movies</string>
+    <string name="no_movies_found">No Movies Found</string>
 
 
 </resources>

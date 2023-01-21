@@ -36,16 +36,16 @@ class MoviesLocalDataSourceImpl(
         moviesDAO.insert(movies)
     }
 
-    override fun getSavedMovies(ids: List<Int>): Flow<List<Movies>> {
-        return moviesDAO.getAllMovies(ids)
+    override fun getSavedMovies(search:String, ids: List<String>): Flow<List<Movies>> {
+        return moviesDAO.getAllMovies(search,ids)
     }
 
     override fun getSavedMovies(): Flow<List<Movies>> {
         return moviesDAO.getAllMovies()
     }
 
-    override suspend fun deleteMoviesFromDB(movies: Movies) {
-        moviesDAO.deleteMovies(movies)
+    override suspend fun deleteMoviesFromDB() {
+        moviesDAO.deleteMovies()
     }
 
     override suspend fun saveMoviesHideToDB(moviesHide: MoviesHide) {

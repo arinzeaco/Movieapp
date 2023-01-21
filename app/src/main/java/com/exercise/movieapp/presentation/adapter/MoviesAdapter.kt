@@ -12,30 +12,28 @@ import com.exercise.movieapp.data.model.Movies
 import com.exercise.movieapp.data.model.MoviesHide
 import com.exercise.movieapp.databinding.MoviesListItemBinding
 
-class MoviesAdapter:RecyclerView.Adapter<MoviesAdapter.MoviesViewHolder>() {
+class MoviesAdapter : RecyclerView.Adapter<MoviesAdapter.MoviesViewHolder>() {
 
 
-    private val callback = object : DiffUtil.ItemCallback<Movies>(){
+    private val callback = object : DiffUtil.ItemCallback<Movies>() {
         override fun areItemsTheSame(oldItem: Movies, newItem: Movies): Boolean {
             return oldItem.title == newItem.title
         }
 
         override fun areContentsTheSame(oldItem: Movies, newItem: Movies): Boolean {
-           return oldItem == newItem
+            return oldItem == newItem
         }
 
     }
 
-    val differ = AsyncListDiffer(this,callback)
-
+    val differ = AsyncListDiffer(this, callback)
 
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MoviesViewHolder {
         val binding = MoviesListItemBinding
-            .inflate(LayoutInflater.from(parent.context),parent,false)
+            .inflate(LayoutInflater.from(parent.context), parent, false)
         return MoviesViewHolder(binding)
     }
-
 
 
     override fun onBindViewHolder(holder: MoviesViewHolder, position: Int) {
@@ -48,38 +46,36 @@ class MoviesAdapter:RecyclerView.Adapter<MoviesAdapter.MoviesViewHolder>() {
     }
 
     inner class MoviesViewHolder(
-        val binding:MoviesListItemBinding):
-        RecyclerView.ViewHolder(binding.root){
-           fun bind(movies: Any){
-               movies as Movies
-               Log.i("MYTAG","came here ${movies.title}")
-               binding.title.text = movies.title
-               binding.description.text = movies.description
-               if(movies.adult!!){
-                   binding.rating.text = "18+"
-               }else{
-                   binding.rating.text = "PG"
-               }
+        val binding: MoviesListItemBinding
+    ) :
+        RecyclerView.ViewHolder(binding.root) {
+        fun bind(movies: Any) {
+            movies as Movies
+            Log.i("MYTAG", "came here ${movies.title}")
+            binding.title.text = movies.title
+            binding.description.text = movies.description
+            binding.rating.text = movies.ratings
 
 
 
-               Glide.with(binding.posterImg).
-               load(BuildConfig.BASE_URL+movies.poster).
-               into(binding.posterImg)
 
-               binding.root.setOnClickListener {
-                  onItemClickListener?.let {
-                        it(movies)
-                  }
-               }
-           }
+            Glide.with(binding.posterImg).
+            load(movies.poster)
+                .into(binding.posterImg)
+
+            binding.root.setOnClickListener {
+                onItemClickListener?.let {
+                    it(movies)
+                }
+            }
         }
+    }
 
-        private var onItemClickListener :((Movies)->Unit)?=null
+    private var onItemClickListener: ((Movies) -> Unit)? = null
 
-        fun setOnItemClickListener(listener : (Movies)->Unit){
-            onItemClickListener = listener
-        }
+    fun setOnItemClickListener(listener: (Movies) -> Unit) {
+        onItemClickListener = listener
+    }
 
 
 }

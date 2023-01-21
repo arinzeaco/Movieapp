@@ -13,14 +13,17 @@ data class MoviesFavorite(
     @PrimaryKey(autoGenerate = true)
     val id : Int? = null,
 
-    @SerializedName("original_title")
+    @SerializedName("_id")
+    val idd : String?,
+
+    @SerializedName("title")
     val title: String?,
 
     @SerializedName("poster_path")
     val poster: String?,
 
-    @SerializedName("adult")
-    val adult: Boolean?,
+    @SerializedName("ratings")
+    val ratings: String?,
 
     @SerializedName("description")
     val description: String?,
